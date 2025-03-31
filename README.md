@@ -22,7 +22,7 @@ part of the corpus. We also provide links to the edf data for users who
 have not downloaded the entire corpus.
 
 BASIC STATISTICS:
-
+```
   |-------------------------------------------------------|
   | Description |  Epilepsy   | No Epilepsy |    Total    |
   |-------------+-------------+-------------+-------------|
@@ -32,4 +32,4 @@ BASIC STATISTICS:
   |-------------+-------------+-------------+-------------|
   | Files       |       1,785 |         513 |       2,298 |
   |-------------------------------------------------------|
-
+```
