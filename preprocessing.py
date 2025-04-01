@@ -1,4 +1,3 @@
-import os
 import mne
 import numpy as np
 import pandas as pd
@@ -6,7 +5,17 @@ import pandas as pd
 
 def select_relevant_channels(raw):
     # For relevant channel criteria check documentation
-    desired = ["EEG FP1-AR", "EEG FP2-AR", "EEG T3-AR", "EEG T4-AR", "EEG CZ-AR"]
+    '''“EEG FP1-REF” for the left frontal pole
+
+        “EEG FP2-REF” for the right frontal pole
+
+        “EEG F3-REF” for the left frontal region
+
+        “EEG F4-REF” for the right frontal region
+
+        “EEG C3-REF” for the left central region'''
+        
+    desired = ["EEG FP1-REF", "EEG FP2-REF", "EEG F3-REF", "EEG F4-REF", "EEG C3-REF"]
     #check if all desired channels are present; if not, skip this file
     if not all(ch in raw.ch_names for ch in desired):
         print("Skipping file because it doesn't have the full set of desired channels.")
@@ -38,6 +47,7 @@ def preprocess_eeg_file(edf_path, max_duration=30,fmin=1.0, fmax=45.0, segment_l
     raw.pick(eeg_channels)
     
     # Selectionner les channels pertinents (channel selection from EDA ?)
+    print(raw.ch_names)
     raw = select_relevant_channels(raw)
     if raw is None:
         return None
@@ -82,4 +92,4 @@ metadata_df = pd.read_excel('eeg_metadata.xlsx') #metadata df obtained from prev
 processed_df = preprocess(metadata_df)
 
 print(processed_df)
-#print(processed_df['eeg_segments'].apply(lambda x: x.size if x is not None))
+print(processed_df['eeg_segments'].apply(lambda x: x.size if x is not None else 0)) #check array size
