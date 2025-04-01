@@ -30,7 +30,7 @@ def preprocess_eeg_file(edf_path, max_duration=30,fmin=1.0, fmax=45.0, segment_l
     
     # Skip EEGs less than max duration (in seconds)
     if raw.times[-1] < max_duration:
-        print(f"Skipping {edf_path}: duration ({raw.times[-1]:.2f} s) is less than required {min_required_duration} s.")
+        print(f"Skipping {edf_path}: duration ({raw.times[-1]:.2f} s) is less than required {max_duration} s.")
         return None
     
     # Crop the EEG to get the same duration
@@ -77,7 +77,7 @@ def preprocess(metadata):
     df_filtered = df_filtered.drop(columns=['patient_group'])
     
     
-    df_sampled = df_filtered.groupby('epilepsy', group_keys=False).apply(lambda x: x.sample(n=2, random_state=42)) #sample balanced classes
+    df_sampled = df_filtered.groupby('epilepsy', group_keys=False).apply(lambda x: x.sample(n=5, random_state=42)) #sample balanced classes
     print(f'Remaining samples: {len(df_sampled)}')
     
     df_sampled['eeg_segments'] = df_sampled['edf_path'].apply(preprocess_eeg_file) #apply preprocessing to each eeg
@@ -93,3 +93,5 @@ processed_df = preprocess(metadata_df)
 
 print(processed_df)
 print(processed_df['eeg_segments'].apply(lambda x: x.size if x is not None else 0)) #check array size
+
+processed_df.to_csv("processed_eeg_data.csv")
