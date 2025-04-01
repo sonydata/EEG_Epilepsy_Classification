@@ -4,11 +4,32 @@ import numpy as np
 import pandas as pd
 
 
-def preprocess_eeg_file(edf_path, fmin=1.0, fmax=45.0, segment_lenght=5, overlap=0):
+def select_relevant_channels(raw):
+    # For relevant channel criteria check documentation
+    desired = ["EEG FP1-AR", "EEG FP2-AR", "EEG T3-AR", "EEG T4-AR", "EEG CZ-AR"]
+    #check if all desired channels are present; if not, skip this file
+    if not all(ch in raw.ch_names for ch in desired):
+        print("Skipping file because it doesn't have the full set of desired channels.")
+        return None
+    raw.pick_channels(desired)
+    return raw
+
+def preprocess_eeg_file(edf_path, max_duration=30,fmin=1.0, fmax=45.0, segment_lenght=5, overlap=0):
 
     # 1. Charger le fichier EDF avec MNE
     raw = mne.io.read_raw_edf(edf_path, preload=True, verbose=False)
-
+    
+    # Skip EEGs less than max duration (in seconds)
+    if raw.times[-1] < max_duration:
+        print(f"Skipping {edf_path}: duration ({raw.times[-1]:.2f} s) is less than required {min_required_duration} s.")
+        return None
+    
+    # Crop the EEG to get the same duration
+    raw.crop(tmin=0, tmax=max_duration)
+    
+    # Resample (to 250 because it's the lowest sampling rate )
+    raw.resample(250, verbose=False)
+    
     # 2. Filtrage passe-bande (1-45 Hz)
     raw.filter(fmin, fmax, fir_design='firwin', verbose=False)
 
@@ -17,7 +38,9 @@ def preprocess_eeg_file(edf_path, fmin=1.0, fmax=45.0, segment_lenght=5, overlap
     raw.pick(eeg_channels)
     
     # Selectionner les channels pertinents (channel selection from EDA ?)
-    
+    raw = select_relevant_channels(raw)
+    if raw is None:
+        return None
     
     #  4. Normalisation canal par canal (centrage-réduction)
     data = raw.get_data()
@@ -27,21 +50,28 @@ def preprocess_eeg_file(edf_path, fmin=1.0, fmax=45.0, segment_lenght=5, overlap
     # 5. Segmentation
     epochs = mne.make_fixed_length_epochs(raw, duration=segment_lenght, preload=False, overlap=overlap)
 
-    # 6. Transform to np array ?
+    # Transform to np array 
 
-    return epochs
+    return epochs.get_data()
 
 
 def preprocess(metadata):
     df_filtered = metadata[metadata['montage'] == '01_tcp_ar'] #select only average reference montage 
     
-    #DROP COLUMNS
+    # DROP COLUMNS: Keep only patient_group, age, gender, and edf_path
+    df_filtered = df_filtered[['patient_group', 'age', 'gender', 'edf_path']]
     
-    df_sampled = df_filtered.groupby('patient_group', group_keys=False).apply(lambda x: x.sample(n=2, random_state=42)) #sample balanced classes
+    # Map patient_group to a binary label: 1 for epilepsy, 0 for non-epilepsy
+    df_filtered['epilepsy'] = df_filtered['patient_group'].map({'epilepsy': 1, 'no_epilepsy': 0})
+    
+    df_filtered = df_filtered.drop(columns=['patient_group'])
+    
+    
+    df_sampled = df_filtered.groupby('epilepsy', group_keys=False).apply(lambda x: x.sample(n=2, random_state=42)) #sample balanced classes
     print(f'Remaining samples: {len(df_sampled)}')
     
     df_sampled['eeg_segments'] = df_sampled['edf_path'].apply(preprocess_eeg_file) #apply preprocessing to each eeg
-    
+
     print('Preprocessing done')
     print(f'Remaining samples: {len(df_sampled)}')
 
@@ -52,3 +82,4 @@ metadata_df = pd.read_excel('eeg_metadata.xlsx') #metadata df obtained from prev
 processed_df = preprocess(metadata_df)
 
 print(processed_df)
+#print(processed_df['eeg_segments'].apply(lambda x: x.size if x is not None))
