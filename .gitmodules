@@ -1,0 +1,3 @@
+[submodule "EEG_dashboard"]
+	path = EEG_dashboard
+	url = https://huggingface.co/spaces/MorganBrizon/EEG_dashboard
