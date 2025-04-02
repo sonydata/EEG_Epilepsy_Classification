@@ -10,10 +10,6 @@ and EEG features associated with epilepsy such as spike and sharp waves.
 A board-certified neurologist, Daniel Goldenholz, and his research team
 reviewed and verified the decisions about each patient.
 
-The files subject_ids_*.list contain unique IDs for each subject that is
-part of the corpus. We also provide links to the edf data for users who
-have not downloaded the entire corpus.
-
 BASIC STATISTICS:
 ```
   |-------------------------------------------------------|
