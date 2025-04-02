@@ -80,6 +80,9 @@ def preprocess(metadata):
     print(f'Remaining samples: {len(df_sampled)}')
     
     df_sampled['eeg_segments'] = df_sampled['edf_path'].apply(preprocess_eeg_file) #apply preprocessing to each eeg
+    df_sampled = df_sampled[df_sampled['eeg_segments'].notnull()] #drop rows where egg_segments is empty 
+    #(reasons EDF file does not contain desired channels or duration is less than 30 sec)
+
 
     print('Preprocessing done')
     print(f'Remaining samples: {len(df_sampled)}')
