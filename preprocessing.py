@@ -60,9 +60,8 @@ def preprocess_eeg_file(edf_path, max_duration=30,fmin=1.0, fmax=45.0, segment_l
     # 5. Segmentation
     epochs = mne.make_fixed_length_epochs(raw, duration=segment_lenght, preload=False, overlap=overlap)
 
-    # Transform to np array 
-
-    return epochs.get_data()
+    # Transform to np array and converts the 3D array to a nested Python list 
+    return epochs.get_data().tolist()
 
 
 def preprocess(metadata):
@@ -92,6 +91,7 @@ metadata_df = pd.read_excel('eeg_metadata.xlsx') #metadata df obtained from prev
 processed_df = preprocess(metadata_df)
 
 print(processed_df)
-print(processed_df['eeg_segments'].apply(lambda x: x.size if x is not None else 0)) #check array size
+#print(processed_df['eeg_segments'].apply(lambda x: x.size if x is not None else 0)) #check array size
+print(processed_df['eeg_segments'].apply(lambda x: len(x) if x is not None else 0))
 
 processed_df.to_csv("processed_eeg_data.csv")
