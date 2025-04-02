@@ -142,6 +142,7 @@ def preprocess(metadata):
 
     #Save result to excel
     final_df.to_excel('preprocessed_data.xlsx')
+    #final_df.to_pickle('preprocessed_data.pkl') this version works better for numpy arrays
     
     return final_df
 
