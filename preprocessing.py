@@ -31,7 +31,7 @@ def select_relevant_channels(raw):
 
         “EEG C3-REF” for the left central region'''
         
-    desired = ["EEG FP1-REF", "EEG FP2-REF", "EEG F3-REF", "EEG F4-REF", "EEG C3-REF"]
+    desired = []# ["EEG FP1-REF", "EEG FP2-REF", "EEG F3-REF", "EEG F4-REF", "EEG C3-REF"]
     #check if all desired channels are present; if not, skip this file
     if not all(ch in raw.ch_names for ch in desired):
         print("Skipping file because it doesn't have the full set of desired channels.")
@@ -79,7 +79,7 @@ def preprocess_eeg_file(edf_path, max_duration=30,fmin=1.0, fmax=45.0, segment_l
     raw.pick(eeg_channels)
     
     # Selectionner les channels pertinents (channel selection from EDA ?)
-    print(raw.ch_names)
+    # print(raw.ch_names)
     raw = select_relevant_channels(raw)
     if raw is None:
         return None
@@ -116,7 +116,7 @@ def flatten_df(processed_df):
     return final_df
 
 
-def preprocess(metadata):
+def preprocess(metadata, n_sample):
     df_filtered = metadata[metadata['montage'] == '01_tcp_ar'] #select only average reference montage 
     
     # DROP COLUMNS: Keep only patient_group, age, gender, and edf_path
@@ -127,7 +127,7 @@ def preprocess(metadata):
     
     df_filtered = df_filtered.drop(columns=['patient_group'])
     
-    df_sampled = df_filtered.groupby('epilepsy', group_keys=False).apply(lambda x: x.sample(n=5, random_state=42)) #sample balanced classes
+    df_sampled = df_filtered.groupby('epilepsy', group_keys=False).apply(lambda x: x.sample(n=n_sample, random_state=42)) #sample balanced classes
     print(f'Remaining samples: {len(df_sampled)}')
     
     df_sampled['eeg_segments'] = df_sampled['edf_path'].apply(preprocess_eeg_file) #apply preprocessing to each eeg
@@ -148,7 +148,10 @@ def preprocess(metadata):
     return final_df
 
 metadata_df = pd.read_excel('eeg_metadata.xlsx') #metadata df obtained from previous extraction
+print(len(metadata_df))
+processed_df = preprocess(metadata_df, 5)
 
-processed_df = preprocess(metadata_df)
-
+processed_df = processed_df[['subject_id','age','gender', 'edf_path', 'epilepsy']]
 print(processed_df)
+
+processed_df.to_csv("processed_eeg_data.csv")
