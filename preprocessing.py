@@ -108,6 +108,7 @@ def flatten_df(processed_df):
         epoch_df['age'] = row['age']
         epoch_df['gender'] = row['gender']
         epoch_df['edf_path'] = row['edf_path']
+        epoch_df['subject_id'] = row['subject_id']
         list_dfs.append(epoch_df)
     
     # Concatenate all epoch dataframes into a single dataframe
@@ -119,13 +120,12 @@ def preprocess(metadata):
     df_filtered = metadata[metadata['montage'] == '01_tcp_ar'] #select only average reference montage 
     
     # DROP COLUMNS: Keep only patient_group, age, gender, and edf_path
-    df_filtered = df_filtered[['patient_group', 'age', 'gender', 'edf_path']]
+    df_filtered = df_filtered[['patient_group', 'age', 'gender', 'edf_path', 'subject_id']]
     
     # Map patient_group to a binary label: 1 for epilepsy, 0 for non-epilepsy
     df_filtered['epilepsy'] = df_filtered['patient_group'].map({'epilepsy': 1, 'no_epilepsy': 0})
     
     df_filtered = df_filtered.drop(columns=['patient_group'])
-    
     
     df_sampled = df_filtered.groupby('epilepsy', group_keys=False).apply(lambda x: x.sample(n=5, random_state=42)) #sample balanced classes
     print(f'Remaining samples: {len(df_sampled)}')

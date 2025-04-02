@@ -90,6 +90,7 @@ def extract_all_features(df, output_csv='eeg_features_updated.csv'):
     for idx, row in df.iterrows():
         epoch_features = {
         'epoch': row['epoch'],
+        'subject_id': row['subject_id'],
         'age': row['age'],
         'gender': row['gender'],
         'epilepsy': row['epilepsy'],
