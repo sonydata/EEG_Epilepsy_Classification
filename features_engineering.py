@@ -1,6 +1,5 @@
 import pandas as pd
 import numpy as np
-import ast
 from scipy.stats import skew, kurtosis
 from scipy.signal import welch
 from antropy import sample_entropy, perm_entropy
@@ -18,24 +17,6 @@ BANDS = {
 # Parameters for Wavelet Transform
 WAVELET = 'db4'         # Common wavelet used in EEG analysis for time-frequency decomposition
 DWT_LEVEL = 4           # Level of decomposition
-
-def parse_array(array_str):
-    """
-    Converts stringified 3D NumPy array from CSV into actual NumPy array.
-    Returns None if parsing fails.
-    """
-    try:
-        if pd.isna(array_str):
-            return None
-        arr = ast.literal_eval(array_str)
-        arr = np.array(arr)
-        if arr.ndim != 3:  # Ensure the shape is (epochs, channels, samples)
-            return None
-        return arr
-    except Exception as e:
-        print(f"Parse error: {e}")
-        return None
-
 
 def bandpower(data, sf, band, relative=True):
     """
@@ -95,10 +76,10 @@ def compute_features(signal, sf=250):
     return features
 
 
-def extract_all_features(df, output_csv='eeg_features.csv'):
+def extract_all_features(df, output_csv='eeg_features_updated.csv'):
     """
     Loops through the preprocessed EEG DataFrame:
-    - Applies feature extraction per epoch and channel
+    - Applies feature extraction per epoch 
     - Merges extracted features with patient metadata
     - Saves full feature set to CSV
     """
@@ -107,23 +88,27 @@ def extract_all_features(df, output_csv='eeg_features.csv'):
     all_feat_rows = []
 
     for idx, row in df.iterrows():
-        array = parse_array(row['eeg_segments'])
-        if array is None:
-            continue
+        epoch_features = {
+        'epoch': row['epoch'],
+        'age': row['age'],
+        'gender': row['gender'],
+        'epilepsy': row['epilepsy'],
+        'edf_path': row['edf_path']
+    }
+        
+        for ch in channel_names:
+            signal = row[ch]
+            if signal is None:
+                continue
 
-        n_epochs, n_channels, _ = array.shape
-        for epoch_idx in range(n_epochs):
-            for ch_idx in range(n_channels):
-                signal = array[epoch_idx, ch_idx]
-                features = compute_features(signal)
-                # Add identifiers
-                features['epoch'] = epoch_idx
-                features['channel'] = channel_names[ch_idx]
-                features['age'] = row['age']
-                features['gender'] = row['gender']
-                features['epilepsy'] = row['epilepsy']
-                features['edf_path'] = row['edf_path']
-                all_feat_rows.append(features)
+            features = compute_features(signal)
+
+            # Prefix each feature with the channel name to avoid collisions
+            ch_prefix = ch.replace(" ", "_")  # e.g., "EEG FP1-REF" -> "EEG_FP1-REF"
+            for feat_name, value in features.items():
+                epoch_features[f"{ch_prefix}_{feat_name}"] = value
+            
+        all_feat_rows.append(epoch_features)
 
     # Final DataFrame and export
     feature_df = pd.DataFrame(all_feat_rows)
@@ -134,5 +119,5 @@ def extract_all_features(df, output_csv='eeg_features.csv'):
 
 if __name__ == "__main__":
     # Load the preprocessed EEG data where each row contains a stringified NumPy array
-    df = pd.read_csv("processed_eeg_data.csv")
+    df = pd.read_pickle("preprocessed_data_updated.pkl")
     features_df = extract_all_features(df)
