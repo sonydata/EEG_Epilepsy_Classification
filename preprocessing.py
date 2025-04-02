@@ -101,7 +101,8 @@ def flatten_df(processed_df):
     # Loop through each row of the processed dataframe
     for idx, row in processed_df.iterrows():
         # Copy the epoch dataframe to avoid SettingWithCopyWarning
-        epoch_df = row['eeg_segments'].copy()
+        #epoch_df = row['eeg_segments'].copy()
+        epoch_df = pd.DataFrame(row['eeg_segments']).copy() 
         # Add metadata columns
         epoch_df['epilepsy'] = row['epilepsy']
         epoch_df['age'] = row['age']
@@ -141,8 +142,8 @@ def preprocess(metadata):
     final_df = flatten_df(df_sampled)
 
     #Save result to excel
-    final_df.to_excel('preprocessed_data.xlsx')
-    #final_df.to_pickle('preprocessed_data.pkl') this version works better for numpy arrays
+    #final_df.to_excel('preprocessed_data.xlsx')
+    final_df.to_pickle('preprocessed_data_updated.pkl') #this version works better w/ numpy arrays
     
     return final_df
 
