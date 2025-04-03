@@ -11,7 +11,7 @@ BANDS = {
     'theta': (4, 8),       # Seen in drowsiness, meditation, or pathology
     'alpha': (8, 12),      # Dominant in relaxed wakefulness, suppressed during seizures
     'beta': (12, 30),      # Linked to alertness and sometimes pathological activity
-    'gamma': (30, 44)      # High-frequency activity, occasionally linked to seizure onset
+    'gamma': (30, 45)      # High-frequency activity, occasionally linked to seizure onset
 }
 
 # Parameters for Wavelet Transform
@@ -84,7 +84,19 @@ def extract_all_features(df, output_csv='eeg_features_updated.csv'):
     - Saves full feature set to CSV
     """
     # Channels used during preprocessing
-    channel_names = ["EEG FP1-REF", "EEG FP2-REF", "EEG F3-REF", "EEG F4-REF", "EEG C3-REF"]
+    channel_names = [
+    #"EEG C3-REF",  # Left central - Sensorimotor cortex involvement
+    #"EEG C4-REF",  # Right central - Contralateral propagation detection
+    #"EEG P3-REF",  # Left parietal - Posterior seizure detection
+    #"EEG P4-REF",  # Right parietal - Low artifact contamination
+    "EEG F7-REF",  # Left frontal - Detects frontal lobe epilepsy patterns
+    #"EEG F8-REF",  # Right frontal - Supplementary motor area seizures
+    "EEG T3-REF",  # Left temporal lobe - Most critical for focal seizures
+    "EEG T4-REF",  # Right temporal lobe - Second most common seizure origin
+    #"EEG T5-REF",  # Left posterior temporal - Temporal-parietal junction activity
+    "EEG T6-REF",  # Right posterior temporal - Interictal spike detection
+    "EEG CZ-REF"  # Central vertex - Essential for generalized seizure patterns
+]
     all_feat_rows = []
 
     for idx, row in df.iterrows():
