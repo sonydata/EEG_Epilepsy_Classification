@@ -116,7 +116,8 @@ def flatten_df(processed_df):
     return final_df
 
 
-def preprocess(metadata, num_samples=2):
+def preprocess(metadata, num_samples=2): #num_samples = number of EEG samples from each group
+    
     df_filtered = metadata[metadata['montage'] == '01_tcp_ar'] #select only average reference montage 
     
     # DROP COLUMNS: Keep only patient_group, age, gender, and edf_path
