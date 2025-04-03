@@ -129,9 +129,11 @@ def preprocess(metadata, num_samples=2):
     
     
     df_sampled = df_filtered.groupby('epilepsy', group_keys=False).apply(
-        lambda x: x.sample(n=min(num_samples, len(x)), random_state=42))
+        lambda x: x.sample(n=min(num_samples, len(x)), random_state=42)) #samples either num_samples (from each group) or total number of samples if it's smaller that num_samples
+    #example num_samples = 50 but there are only 35 epilepsy EEGS
+    #returns 35 samples of epilepsy EEGs and 50 of non epilepsy EEgs
     
-    print(f'Remaining samples: {len(df_sampled)}')
+    print(f'Remaining samples: {len(df_sampled)}') #example 85 = 35 + 50 
     
     df_sampled['eeg_segments'] = df_sampled['edf_path'].apply(preprocess_eeg_file) #apply preprocessing to each eeg
     
