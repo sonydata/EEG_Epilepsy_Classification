@@ -36,7 +36,7 @@ def select_relevant_channels(raw):
     if not all(ch in raw.ch_names for ch in desired):
         print("Skipping file because it doesn't have the full set of desired channels.")
         return None
-    raw.pick_channels(desired)
+    raw.pick_channels(desired, verbose=False)
     return raw
 
 
@@ -66,7 +66,7 @@ def preprocess_eeg_file(edf_path, max_duration=30,fmin=1.0, fmax=45.0, segment_l
         return None
     
     # Crop the EEG to get the same duration
-    raw.crop(tmin=0, tmax=max_duration)
+    raw.crop(tmin=0, tmax=max_duration, verbose=False)
     
     # Resample (to 250 because it's the lowest sampling rate )
     raw.resample(250, verbose=False)
@@ -76,7 +76,7 @@ def preprocess_eeg_file(edf_path, max_duration=30,fmin=1.0, fmax=45.0, segment_l
 
     # Suppression des canaux non EEG
     eeg_channels = mne.pick_types(raw.info, eeg=True, exclude=[])
-    raw.pick(eeg_channels)
+    raw.pick(eeg_channels, verbose=False)
     
     # Selectionner les channels pertinents (channel selection from EDA ?)
     print(raw.ch_names)
@@ -85,7 +85,7 @@ def preprocess_eeg_file(edf_path, max_duration=30,fmin=1.0, fmax=45.0, segment_l
         return None
     
     # Segmentation
-    epochs = mne.make_fixed_length_epochs(raw, duration=segment_lenght, preload=False, overlap=overlap)
+    epochs = mne.make_fixed_length_epochs(raw, duration=segment_lenght, preload=False, overlap=overlap, verbose=False)
 
     # Transform to dataframe and standadize
 
@@ -116,7 +116,7 @@ def flatten_df(processed_df):
     return final_df
 
 
-def preprocess(metadata):
+def preprocess(metadata, num_samples=2):
     df_filtered = metadata[metadata['montage'] == '01_tcp_ar'] #select only average reference montage 
     
     # DROP COLUMNS: Keep only patient_group, age, gender, and edf_path
@@ -127,7 +127,10 @@ def preprocess(metadata):
     
     df_filtered = df_filtered.drop(columns=['patient_group'])
     
-    df_sampled = df_filtered.groupby('epilepsy', group_keys=False).apply(lambda x: x.sample(n=5, random_state=42)) #sample balanced classes
+    
+    df_sampled = df_filtered.groupby('epilepsy', group_keys=False).apply(
+        lambda x: x.sample(n=min(num_samples, len(x)), random_state=42))
+    
     print(f'Remaining samples: {len(df_sampled)}')
     
     df_sampled['eeg_segments'] = df_sampled['edf_path'].apply(preprocess_eeg_file) #apply preprocessing to each eeg
@@ -147,8 +150,11 @@ def preprocess(metadata):
     
     return final_df
 
-metadata_df = pd.read_excel('eeg_metadata.xlsx') #metadata df obtained from previous extraction
+if __name__ == "__main__":
+    metadata_df = pd.read_excel('eeg_metadata.xlsx') #metadata df obtained from previous extraction
 
-processed_df = preprocess(metadata_df)
+    processed_df = preprocess(metadata_df)
 
-print(processed_df)
+    print(processed_df)
+
+    print(processed_df['EEG FP1-REF'].apply(lambda x: x.size))
