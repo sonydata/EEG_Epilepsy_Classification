@@ -3,3 +3,18 @@
 
 Exploratory/
 EEG_Epilepsy/
+
+.venv/
+myenv/
+venv/
+
+*.csv
+*.joblib
+
+.env
+
+.DS_Store
+
+mlruns/
+
+

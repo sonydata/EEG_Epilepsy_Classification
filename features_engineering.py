@@ -3,7 +3,7 @@ import numpy as np
 from scipy.stats import skew, kurtosis
 from scipy.signal import welch
 from antropy import sample_entropy, perm_entropy
-import pywt
+import pywt #pip install PyWavelets
 
 # EEG frequency bands of interest for epilepsy detection 
 BANDS = {
@@ -105,8 +105,7 @@ def extract_all_features(df, output_csv='eeg_features_updated.csv'):
         'subject_id': row['subject_id'],
         'age': row['age'],
         'gender': row['gender'],
-        'epilepsy': row['epilepsy'],
-        'edf_path': row['edf_path']
+        'epilepsy': row['epilepsy']
     }
         
         for ch in channel_names:
