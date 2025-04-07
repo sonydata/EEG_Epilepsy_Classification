@@ -21,17 +21,14 @@ def standardize_dataframe(df):
 
 def select_relevant_channels(raw):
     # For relevant channel criteria check documentation
-    '''“EEG FP1-REF” for the left frontal pole
+    desired = ['EEG FP1-REF', 'EEG FP2-REF', 'EEG F3-REF', 'EEG F4-REF', 
+            'EEG C3-REF', 'EEG C4-REF', 'EEG P3-REF', 'EEG P4-REF', 
+            'EEG O1-REF', 'EEG O2-REF', 'EEG F7-REF', 'EEG F8-REF', 
+            'EEG T3-REF', 'EEG T4-REF', 'EEG T5-REF', 'EEG T6-REF', 
+            'EEG T1-REF', 'EEG T2-REF', 'EEG FZ-REF', 'EEG CZ-REF', 'EEG PZ-REF']
+    
+    # old : ["EEG P3-REF", "EEG T3-REF", "EEG C3-REF", "EEG CZ-REF", "EEG C4-REF"]
 
-        “EEG FP2-REF” for the right frontal pole
-
-        “EEG F3-REF” for the left frontal region
-
-        “EEG F4-REF” for the right frontal region
-
-        “EEG C3-REF” for the left central region'''
-        
-    desired = ["EEG FP1-REF", "EEG FP2-REF", "EEG F3-REF", "EEG F4-REF", "EEG C3-REF"]
     #check if all desired channels are present; if not, skip this file
     if not all(ch in raw.ch_names for ch in desired):
         print("Skipping file because it doesn't have the full set of desired channels.")
@@ -55,14 +52,15 @@ def collapse_epoch_df_by_channel(epoch_df):
         rows.append(row)
     return pd.DataFrame(rows)
 
-def preprocess_eeg_file(edf_path, max_duration=30,fmin=1.0, fmax=45.0, segment_lenght=5, overlap=0):
+def preprocess_eeg_file(edf_path, max_duration=30, fmin=0.5, fmax=45.0, segment_lenght=5, overlap=0.5):
 
     # 1. Charger le fichier EDF avec MNE
     raw = mne.io.read_raw_edf(edf_path, preload=True, verbose=False)
     
     # Skip EEGs less than max duration (in seconds)
-    if raw.times[-1] < max_duration:
-        print(f"Skipping {edf_path}: duration ({raw.times[-1]:.2f} s) is less than required {max_duration} s.")
+    duration = raw.times[-1]
+    # Skip sessions that are too short (<30s) or too long (>1 hour), often long-term monitoring
+    if duration > 3600 or duration < 30:
         return None
     
     # Crop the EEG to get the same duration
@@ -71,6 +69,8 @@ def preprocess_eeg_file(edf_path, max_duration=30,fmin=1.0, fmax=45.0, segment_l
     # Resample (to 250 because it's the lowest sampling rate )
     raw.resample(250, verbose=False)
     
+    raw.notch_filter(freqs=60, verbose=False)  # Remove power line noise
+
     # Filtrage passe-bande (1-45 Hz)
     raw.filter(fmin, fmax, fir_design='firwin', verbose=False)
 
@@ -78,7 +78,7 @@ def preprocess_eeg_file(edf_path, max_duration=30,fmin=1.0, fmax=45.0, segment_l
     eeg_channels = mne.pick_types(raw.info, eeg=True, exclude=[])
     raw.pick(eeg_channels, verbose=False)
     
-    # Selectionner les channels pertinents (channel selection from EDA ?)
+    # Selectionner les channels pertinents 
     print(raw.ch_names)
     raw = select_relevant_channels(raw)
     if raw is None:
@@ -116,7 +116,7 @@ def flatten_df(processed_df):
     return final_df
 
 
-def preprocess(metadata, num_samples=2): #num_samples = number of EEG samples from each group
+def preprocess(metadata, num_samples=100): #num_samples = number of EEG samples from each group
     
     df_filtered = metadata[metadata['montage'] == '01_tcp_ar'] #select only average reference montage 
     
@@ -127,7 +127,6 @@ def preprocess(metadata, num_samples=2): #num_samples = number of EEG samples fr
     df_filtered['epilepsy'] = df_filtered['patient_group'].map({'epilepsy': 1, 'no_epilepsy': 0})
     
     df_filtered = df_filtered.drop(columns=['patient_group'])
-    
     
     df_sampled = df_filtered.groupby('epilepsy', group_keys=False).apply(
         lambda x: x.sample(n=min(num_samples, len(x)), random_state=42)) #samples either num_samples (from each group) or total number of samples if it's smaller that num_samples
@@ -149,15 +148,15 @@ def preprocess(metadata, num_samples=2): #num_samples = number of EEG samples fr
 
     #Save result to excel
     #final_df.to_excel('preprocessed_data.xlsx')
-    final_df.to_pickle('preprocessed_data_updated.pkl') #this version works better w/ numpy arrays
+    final_df.to_pickle('preprocessed_data_CNN.pkl') #this version works better w/ numpy arrays
     
     return final_df
 
 if __name__ == "__main__":
-    metadata_df = pd.read_excel('eeg_metadata.xlsx') #metadata df obtained from previous extraction
+    metadata_df = pd.read_excel('resources/eeg_metadata.xlsx') #metadata df obtained from previous extraction
 
     processed_df = preprocess(metadata_df)
 
     print(processed_df)
 
-    print(processed_df['EEG FP1-REF'].apply(lambda x: x.size))
+    #print(processed_df['EEG FP1-REF'].apply(lambda x: x.size))
