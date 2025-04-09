@@ -18,3 +18,4 @@ venv/
 mlruns/
 
 
+preprocessed_data_CNN.pkl
