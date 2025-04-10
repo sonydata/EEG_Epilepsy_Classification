@@ -27,3 +27,47 @@ Reference: Veloso, L., McHugh, J. R., von Weltin, E., Obeid, I., & Picone,
  Research. In I. Obeid & J. Picone (Eds.), Proceedings of the IEEE
  Signal Processing in Medicine and Biology Symposium
  (p. 1). Philadelphia, Pennsylvania, USA: IEEE.
+
+**Preprocessing pipeline**
+```
+📄 eeg_metadata.xlsx
+│
+├── Each row: one EEG session (.edf file)
+│
+▼
+📋 Sample metadata (100 per class)
+│
+├── epilepsy (1)     ─────┐
+└── no_epilepsy (0)  ─────┘
+     │
+     ▼
+📂 Load .edf file using MNE
+     │
+     ├── Resample to 250 Hz
+     ├── Bandpass filter (1–45 Hz)
+     ├── Select EEG-only channels
+     ├── Select subset of relevant channels (F7, T3, T4, T6, CZ)
+     ├── Skip if:
+     │   ├── Duration < 5 sec
+     │   └── Missing channels
+     │
+     ▼
+🧠 Segment into overlapping 5-second epochs
+     │
+     ├── Drop if no valid epochs
+     ▼
+📊 Convert to long-format DataFrame
+     │
+     ├── Z-score normalize each channel
+     ▼
+📦 Collapse into one row per 5-sec epoch
+     (arrays per channel)
+     ▼
+📄 Add to 'eeg_segments' column
+     ▼
+📋 Merge with metadata (age, gender, label...)
+     ▼
+🧾 Flatten: each row = one 5-second segment
+     ▼
+💾 Save as Pickle → `preprocessed_data_updated.pkl`
+```
