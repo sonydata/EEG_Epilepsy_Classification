@@ -3,15 +3,11 @@ import tempfile
 import uvicorn
 from fastapi import FastAPI, UploadFile, File, HTTPException
 from fastapi.responses import JSONResponse
-import tensorflow as tf
 
-# Import your prediction function from your prediction module.
-from prediction import predict_eeg_recording
+# Import your prediction functions
+from prediction import predict_eeg_recording, predict_ensemble_eeg_recording
 
 app = FastAPI(title="EEG Epilepsy Prediction API")
-
-# Load the trained model once at startup.
-model = tf.keras.models.load_model('model1_2dcnn.h5')
 
 @app.get("/", tags=["Introduction Endpoints"])
 async def index():
@@ -25,12 +21,20 @@ async def index():
     return message
 
 @app.post("/predict", tags=["Machine Learning"])
-async def predict_endpoint(file: UploadFile = File(...)):
+async def predict_endpoint(
+    file: UploadFile = File(...),
+    model_choice: str = "2DCNN",
+    ensemble_method: str = None
+):
     """
-    Accepts an EEG EDF file, processes it using the preprocessing and spectrogram conversion functions,
-    and returns an aggregated prediction (epilepsy or no epilepsy) along with the mean probability.
+    
+    Query parameters:
+      - model_choice: Choose one model among "2DCNN", "EEGNet", "EpilepsyNet", or "ensemble".
+      - ensemble_method: (Optional, required if model_choice is "ensemble") 
+                           The ensemble method to use ("average" or "voting").
+
     """
-    # Save the uploaded file temporarily.
+    print("Saving uploaded file as temporary file...")
     try:
         suffix = os.path.splitext(file.filename)[1]
         with tempfile.NamedTemporaryFile(delete=False, suffix=suffix) as tmp:
@@ -39,19 +43,26 @@ async def predict_endpoint(file: UploadFile = File(...)):
     except Exception as e:
         raise HTTPException(status_code=500, detail="Error saving temporary file")
     
-    # Use your prediction function to process the file and obtain an aggregated prediction.
+    print("Performing prediction using model_choice =", model_choice)
     try:
-        pred_label, mean_prob = predict_eeg_recording(tmp_path, model, threshold=0.5)
+        if model_choice.lower() == "ensemble":
+            if ensemble_method is None:
+                raise HTTPException(status_code=400, detail="ensemble_method must be specified when using ensemble model_choice")
+            pred_label, mean_prob = predict_ensemble_eeg_recording(tmp_path, ensemble_method=ensemble_method, threshold=0.5)
+        else:
+            pred_label, mean_prob = predict_eeg_recording(tmp_path, model_name=model_choice, threshold=0.5)
     except Exception as e:
         os.remove(tmp_path)
         raise HTTPException(status_code=400, detail=f"Prediction failed: {e}")
     
     os.remove(tmp_path)
     
+    
     response = {
         "prediction": "epilepsy" if pred_label == 1 else "no epilepsy",
-        "mean_probability": float(mean_prob)
+        "confidence": mean_prob
     }
+    print("Prediction complete, returning response...")
     return JSONResponse(content=response)
 
 if __name__ == "__main__":

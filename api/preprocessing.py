@@ -19,7 +19,12 @@ def standardize_dataframe(df):
     
     return df_standardized
 
-def select_relevant_channels(raw):
+desired = ["EEG FP1-REF", "EEG FP2-REF", 
+           "EEG F3-REF", "EEG F4-REF",
+           "EEG C3-REF"]
+
+def select_relevant_channels(raw, desired = desired):
+    
     # For relevant channel criteria check documentation
     '''“EEG FP1-REF” for the left frontal pole
 
@@ -31,7 +36,7 @@ def select_relevant_channels(raw):
 
         “EEG C3-REF” for the left central region'''
         
-    desired = ["EEG FP1-REF", "EEG FP2-REF", "EEG F3-REF", "EEG F4-REF", "EEG C3-REF"]
+    
     #check if all desired channels are present; if not, skip this file
     if not all(ch in raw.ch_names for ch in desired):
         print("Skipping file because it doesn't have the full set of desired channels.")
@@ -55,7 +60,7 @@ def collapse_epoch_df_by_channel(epoch_df):
         rows.append(row)
     return pd.DataFrame(rows)
 
-def preprocess_eeg_file(edf_path, fmin=1.0, fmax=45.0, segment_lenght=5, overlap=2):
+def preprocess_eeg_file(edf_path, fmin=1.0, fmax=45.0, segment_lenght=5, overlap=2,desired=desired):
 
     # 1. Charger le fichier EDF avec MNE
     raw = mne.io.read_raw_edf(edf_path, preload=True, verbose=False)
@@ -77,7 +82,7 @@ def preprocess_eeg_file(edf_path, fmin=1.0, fmax=45.0, segment_lenght=5, overlap
     
     # Selectionner les channels pertinents (channel selection from EDA ?)
     print(raw.ch_names)
-    raw = select_relevant_channels(raw)
+    raw = select_relevant_channels(raw,desired=desired)
     if raw is None:
         return None
     
