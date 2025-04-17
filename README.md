@@ -16,13 +16,13 @@ This project aims to build a robust **EEG-based binary classifier** to distingui
 
 ## 🔄 Preprocessing Pipeline
 
-Raw `.edf` EEG signals were cleaned and segmented using the following steps:
+Raw `.edf` EEG signals were cleaned and segmented using the main following steps:
 
 1. Load session from .edf (via MNE)
 2. Apply bandpass filter (1–45 Hz)
 3. Resample to 250 Hz
 4. Select relevant EEG channels 
-5. Segment into overlapping 5-second windows
+5. Segment into 5-second windows
 6. Normalize each epoch 
 
 Outputs are stored as pickled DataFrames and used in all downstream models. Further tailored pre-processing or feature engineering is then applied based on the model used.
@@ -42,19 +42,19 @@ Outputs are stored as pickled DataFrames and used in all downstream models. Furt
 - **Pipeline**: Handcrafted features → PCA → Classification -> Stratified cross-validation (by patient)
 
 
-## 🧠 Deep Learning Models
+### Deep Learning Models
 
-### EEGNet
-- Shallow compact CNN architecture tailored for EEG signal classification
-- Trained on raw multi-channel segment arrays
+- **EEGNet**
+  - Shallow compact CNN architecture tailored for EEG signal classification
+  - Trained on raw multi-channel segment arrays
 
-### EpilepsyNet
-- Multi-head attention architecture built over **correlation matrices** between EEG channels
-- Uses full 1-minute segments split into 5-second chunks, then computes correlation matrices
+- **EpilepsyNet**
+  - Multi-head attention architecture built over **correlation matrices** between EEG channels
+  - Uses full 1-minute segments split into 5-second chunks, then computes correlation matrices
 
-### SpectroNet (2D CNN)
-- CNN trained on **2D STFT spectrograms** of EEG segments
-- Model WIP in `model_2dcnn.py`  
+- **SpectroNet (2D CNN)**
+  - CNN trained on **2D STFT spectrograms** of EEG segments
+  - Model WIP in `model_2dcnn.py`  
 ---
 
 ## 📈 Performance Metrics
