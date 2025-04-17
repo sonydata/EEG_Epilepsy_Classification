@@ -50,15 +50,10 @@ Outputs are stored as pickled DataFrames and used in all downstream models. Furt
 
 - **EEGNet**
   - Shallow compact CNN architecture tailored for EEG signal classification
-  - Trained on raw multi-channel segment arrays
-
 - **EpilepsyNet**
   - Multi-head attention architecture built over **correlation matrices** between EEG channels
-  - Uses full 1-minute segments split into 5-second chunks, then computes correlation matrices
-
 - **SpectroNet (2D CNN)**
   - CNN trained on **2D STFT spectrograms** of EEG segments
-  - Model WIP in `model_2dcnn.py`  
 ---
 
 ## 📈 Performance Metrics
@@ -69,7 +64,7 @@ Outputs are stored as pickled DataFrames and used in all downstream models. Furt
 | EpilepsyNet  | 82%         | 71%     |
 | SpectroNet   | 77%         | 71%     |
 
-We focused on sensitivity and specificity due to their clinical relevance
+We focused on sensitivity and specificity due to their clinical relevance.
 
 ---
 
@@ -108,7 +103,7 @@ The summary of this work is available here:
 
 ## 👥 Team
 
-_Data Science & Engineering Bootcamp - Final Project Team: Sonia, Robin, Morgan, Zacharie, Eli_
+_Jedha Data Science & Engineering Bootcamp - Final Project Team: Sonia, Robin, Morgan, Zacharie, Eli_
 
 ---
 
