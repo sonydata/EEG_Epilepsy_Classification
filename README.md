@@ -64,7 +64,7 @@ Outputs are stored as pickled DataFrames and used in all downstream models. Furt
 | EpilepsyNet  | 82%         | 71%     |
 | SpectroNet   | 77%         | 71%     |
 
-We focused on sensitivity and specificity due to their clinical relevance.
+We present sensitivity and specificity only here due to their clinical relevance. Full metrics can be found in the notebooks and presentation.
 
 ---
 
