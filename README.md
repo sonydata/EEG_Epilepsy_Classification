@@ -72,8 +72,8 @@ We focused on sensitivity and specificity due to their clinical relevance.
 
 ### 📊 Real-Time Demo: Epilepsy Classifier Web App
 Visualize EEG segment outputs from an `.edf` file (EEG recording session file), explore predictions, and compare models, using our interactive web app:  
-👉 **[EEG Epilepsy App on Hugging Face Spaces](https://huggingface.co/spaces/MorganBrizon/EEG_Epilepsy_App)**
-👉 **[Video demo](EEG_epilepsy_app_demo.mov)**
+👉 **[EEG Epilepsy App on Hugging Face](https://huggingface.co/spaces/MorganBrizon/EEG_Epilepsy_App)**
+👉 **[Video demo](web_app/EEG_epilepsy_app_demo.mov)**
 
 Here’s a glimpse of our real-time EEG classification app:
 ![Visualize EEG signals by channel](web_app/images/EEG_app_signalsplot.png)
