@@ -15,7 +15,9 @@ In addition to this analysis, we developed:
   - 200 patients total (100 epileptic / 100 non-epileptic)
   - 698 EEG sessions, ~2300 EEG files
 - Labels were verified by neurologists based on clinical reports
+  
 🔒 The raw EEG data used in this project cannot be redistributed. To replicate results, please request access via [the application form](https://isip.piconepress.com/projects/nedc/forms/tuh_eeg.pdf).
+
 ---
 
 ## 🔄 Preprocessing Pipeline
