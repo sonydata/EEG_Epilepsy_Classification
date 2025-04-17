@@ -1,6 +1,10 @@
-# 🧠 EEG Epilepsy Classification
+# 🧠 EEG Epilepsy Detection System
 
-This project aims to build a robust **EEG-based binary classifier** to distinguish between patients **with and without epilepsy**, using raw clinical EEG data and machine learning pipelines. It combines signal preprocessing, feature engineering, and deep learning to explore what models best detect epilepsy from brain activity.
+This project aims to build a robust **EEG-based binary classification system** to detect the presence of **epilepsy** using raw clinical EEG recordings. The pipeline combines advanced **signal preprocessing**, **handcrafted feature extraction**, and **deep learning architectures** to evaluate what models perform best in identifying epileptic patterns from brain activity.
+
+In addition to this analysis, we developed:
+- A **Streamlit web application** for real-time EEG segment analysis, classification and model comparison.
+- A **generative reporting tool** using **Google Gemini + LangChain**, which automatically produces clinician-style EEG summaries based on extracted features — offering a novel integration of LLMs with biosignal analysis.
 
 ---
 
