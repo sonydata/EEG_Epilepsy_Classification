@@ -4,23 +4,9 @@ This project aims to build a robust **EEG-based binary classifier** to distingui
 
 ---
 
-## 📁 Repository Overview
-
-| File / Folder                  | Purpose                                                       |
-|-------------------------------|---------------------------------------------------------------|
-| `EEGNet.ipynb`                | Deep learning model training using the EEGNet architecture    |
-| `EpilepsyNet.ipynb`           | Custom CNN training notebook (`EpilepsyNet`)                  |
-| `EpilepsyNet_model.py`        | EpilepsyNet model class and training loop                     |
-| `ml_baseline_models.ipynb`    | Classical ML baselines using handcrafted EEG features         |
-| `features_engineering.py`     | Feature extraction functions for spectral/statistical metrics |
-| `preprocessing.py`            | Core preprocessing pipeline using MNE                         |
-| `Epilepsy_Classification_PPT_final.pptx` | Final project slides                             |
-
----
-
 ## 📊 Dataset: TUH Epilepsy Corpus v2.0.1
 
-- **Source**: Temple University Hospital EEG Epilepsy Corpus  
+- **Source**: [Temple University Hospital EEG Epilepsy Corpus](https://isip.piconepress.com/projects/tuh_eeg/)
 - **Structure**:
   - 200 patients total (100 epileptic / 100 non-epileptic)
   - 698 EEG sessions, ~2300 EEG files
@@ -85,15 +71,14 @@ Outputs are stored as pickled DataFrames and used in all downstream models.
 ## 🌐 Interactive Tools & Generative Reporting
 
 ### 📊 Real-Time Demo: Epilepsy Classifier Dashboard  
-Explore predictions, compare models, and visualize EEG segment outputs using our interactive dashboard:  
+Visualize EEG segment outputs from an edf file, explore predictions, and compare models, using our interactive dashboard:  
 👉 **[EEG Epilepsy App on Hugging Face Spaces](https://huggingface.co/spaces/MorganBrizon/EEG_Epilepsy_App)**
 
 ### 🧾 LLM-Generated EEG Reports (Experimental)  
 We developed a proof-of-concept pipeline for **automated EEG report generation** using extracted signal features and Google's **Gemini 2.0 Flash API** via **LangChain**.
 
 - Simulates clinician-style summaries based on extracted EEG characteristics  
-- Explores applications in **clinical NLP**, **documentation automation**, and **multimodal learning**  
-- Source notebook: [`llm_eeg_report_pipeline.ipynb`](llm_eeg_report_pipeline.ipynb)
+- Source notebook: [`EEG_report_Gemini.ipynb`](EEG_report_Gemini.ipynb)
 
 ⚠️ *Note: This component is experimental and intended for research purposes only.*
 
