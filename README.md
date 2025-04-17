@@ -70,8 +70,8 @@ Outputs are stored as pickled DataFrames and used in all downstream models. Furt
 
 ## 🌐 Interactive Tools & Generative Reporting
 
-### 📊 Real-Time Demo: Epilepsy Classifier Dashboard  
-Visualize EEG segment outputs from an edf file, explore predictions, and compare models, using our interactive dashboard:  
+### 📊 Real-Time Demo: Epilepsy Classifier Web App  
+Visualize EEG segment outputs from an edf file, explore predictions, and compare models, using our interactive web app:  
 👉 **[EEG Epilepsy App on Hugging Face Spaces](https://huggingface.co/spaces/MorganBrizon/EEG_Epilepsy_App)**
 
 ### 🧾 LLM-Generated EEG Reports (Experimental)  
