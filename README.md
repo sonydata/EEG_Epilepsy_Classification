@@ -31,8 +31,8 @@ Outputs are stored as pickled DataFrames and used in all downstream models. Furt
 
 ## 🤖 Models Implemented
 
-### ✅ Classical ML
-- **Features extracted from**: `features_engineering.py`
+### Classical ML
+- **Features engineering**: `features_engineering.py`
 - **Feature types**:
   - Time-domain: mean, variance, skewness, kurtosis
   - Frequency-domain: relative power in delta, theta, alpha, beta, gamma bands
@@ -57,7 +57,7 @@ Outputs are stored as pickled DataFrames and used in all downstream models. Furt
 - Model WIP in `model_2dcnn.py`  
 ---
 
-## 📈 Performance Snapshot
+## 📈 Performance Metrics
 
 | Model        | Sensitivity | Specificity|
 |--------------|-------------|----------|
@@ -65,12 +65,14 @@ Outputs are stored as pickled DataFrames and used in all downstream models. Furt
 | EpilepsyNet  | 82%         | 71%     |
 | SpectroNet   | 77%         | 71%     |
 
+We focused on sensitivity and specificity due to their clinical relevance
+
 ---
 
 ## 🌐 Interactive Tools & Generative Reporting
 
 ### 📊 Real-Time Demo: Epilepsy Classifier Web App
-Visualize EEG segment outputs from an edf file (EEG recording session file), explore predictions, and compare models, using our interactive web app:  
+Visualize EEG segment outputs from an `.edf` file (EEG recording session file), explore predictions, and compare models, using our interactive web app:  
 👉 **[EEG Epilepsy App on Hugging Face Spaces](https://huggingface.co/spaces/MorganBrizon/EEG_Epilepsy_App)**
 👉 **[Video demo](EEG_epilepsy_app_demo.mov)**
 
@@ -97,15 +99,6 @@ We developed a proof-of-concept pipeline for **automated EEG report generation**
 
 The summary of this work is available here:  
 📎 [`Epilepsy_Classification_PPT_final.pptx`](Epilepsy_Classification_PPT_final.pptx)
-
----
-
-## 🚀 Next Steps
-
-- Train ensemble model combining EEGNet + EpilepsyNet
-- Improve segment-level labeling for seizure-specific classification
-- Improve generalization with data augmentation 
-- Explore model interpretability (e.g., Grad-CAMs)  
 
 ---
 
