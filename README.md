@@ -77,8 +77,9 @@ Visualize EEG segment outputs from an edf file, explore predictions, and compare
 ### 🧾 LLM-Generated EEG Reports (Experimental)  
 We developed a proof-of-concept pipeline for **automated EEG report generation** using extracted signal features and Google's **Gemini 2.0 Flash API** via **LangChain**.
 
-- Simulates clinician-style summaries based on extracted EEG characteristics  
-- Source notebook: [`EEG_report_Gemini.ipynb`](EEG_report_Gemini.ipynb)
+- Simulates clinician-style summaries based on extracted EEG characteristics
+- Prompt engineering based on the American Clinical Neurophysiology Society (ACNS) Guideline for EEG reporting 
+- Source notebook: [`EEG_report_Gemini.ipynb`](notebooks/EEG_report_Gemini.ipynb)
 
 ⚠️ *Note: This component is experimental and intended for research purposes only.*
 
