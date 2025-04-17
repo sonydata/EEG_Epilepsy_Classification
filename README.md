@@ -64,15 +64,23 @@ Outputs are stored as pickled DataFrames and used in all downstream models. Furt
 | EEGNet       | 75%         | 88%     |
 | EpilepsyNet  | 82%         | 71%     |
 | SpectroNet   | 77%         | 71%     |
-| ChronoNet    | 69%         | 64%     |
 
 ---
 
 ## 🌐 Interactive Tools & Generative Reporting
 
-### 📊 Real-Time Demo: Epilepsy Classifier Web App  
-Visualize EEG segment outputs from an edf file, explore predictions, and compare models, using our interactive web app:  
+### 📊 Real-Time Demo: Epilepsy Classifier Web App
+Visualize EEG segment outputs from an edf file (EEG recording session file), explore predictions, and compare models, using our interactive web app:  
 👉 **[EEG Epilepsy App on Hugging Face Spaces](https://huggingface.co/spaces/MorganBrizon/EEG_Epilepsy_App)**
+👉 **[Video demo](EEG_epilepsy_app_demo.mov)**
+
+Here’s a glimpse of our real-time EEG classification app:
+![Visualize EEG signals by channel](web_app/images/EEG_app_signalsplot.png)
+
+![Predict epilepsy](web_app/images/EEG_app_pred.png)
+
+![Predict epilepsy](web_app/images/EEG_app_predplot.png)
+
 
 ### 🧾 LLM-Generated EEG Reports (Experimental)  
 We developed a proof-of-concept pipeline for **automated EEG report generation** using extracted signal features and Google's **Gemini 2.0 Flash API** via **LangChain**.
