@@ -89,7 +89,7 @@ Explore predictions, compare models, and visualize EEG segment outputs using our
 👉 **[EEG Epilepsy App on Hugging Face Spaces](https://huggingface.co/spaces/MorganBrizon/EEG_Epilepsy_App)**
 
 ### 🧾 LLM-Generated EEG Reports (Experimental)  
-We developed a proof-of-concept pipeline for **automated EEG report generation** using extracted signal features and Google's **Gemini Pro API** via **LangChain**.
+We developed a proof-of-concept pipeline for **automated EEG report generation** using extracted signal features and Google's **Gemini 2.0 Flash API** via **LangChain**.
 
 - Simulates clinician-style summaries based on extracted EEG characteristics  
 - Explores applications in **clinical NLP**, **documentation automation**, and **multimodal learning**  
