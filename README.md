@@ -25,7 +25,7 @@ Raw `.edf` EEG signals were cleaned and segmented using the following steps:
 5. Segment into overlapping 5-second windows
 6. Normalize each epoch 
 
-Outputs are stored as pickled DataFrames and used in all downstream models.
+Outputs are stored as pickled DataFrames and used in all downstream models. Further tailored pre-processing or feature engineering is then applied based on the model used.
 
 ---
 
