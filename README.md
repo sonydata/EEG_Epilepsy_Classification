@@ -1,6 +1,6 @@
 # 🧠 EEG Epilepsy Detection System
 
-This project aims to build a robust EEG-based binary classifier to detect whether a patient has epilepsy based on signals from a single EEG session. It combines signal preprocessing, feature engineering, and deep learning to evaluate which models best support accurate clinical decision-making.
+This project aims to build a robust EEG-based binary classifier to detect whether a patient has epilepsy based on signals from a single EEG session. It combines signal preprocessing, feature engineering, and deep learning to support clinical decision-making.
 
 In addition to this analysis, we developed:
 - A **Streamlit web application** for real-time EEG segment analysis, classification and model comparison.
